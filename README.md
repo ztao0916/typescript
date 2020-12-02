@@ -177,3 +177,77 @@ const jack: info[] = [{name: 'jack', age:18}]
 const demo: [string, string, number] = ["dajiao", "teacher", 28]
 ```
 
+### Interface接口
+
+比如招聘需要筛选符合条件的简历,就需要接口来处理,接口就是用来规范类型的
+
+```js
+//需求一: 筛选简历[age<25，bust>90]
+const screenResume = (name: string, age: number, bust: number): void => {
+	let defaultAge = 25;
+	let defaultBust = 90;
+	// if (age < defaultAge && bust >= defaultBust) {
+	// 	console.log(`${name}进入面试`);
+	// } else if (age > defaultAge || bust < defaultBust) {
+	// 	console.log(`${name}被淘汰`);
+	// }
+	age < defaultAge && bust >= defaultBust && console.log(`${name}进入面试`);
+	age > defaultAge || (bust < defaultBust && console.log(`${name}被淘汰`));
+}
+
+screenResume('小花', 23, 91)
+screenResume('小绿', 23, 89)
+
+//需求二: 在筛选完成的基础上,老大要看到简历
+const getResume = (name: string, age: number, bust: number): void => {
+	console.log(`${name}的年龄是${age},bust是${bust}`)
+}
+getResume('小花', 23, 91)
+
+
+//两个需求参数和类型注解都是一样的,需要代码复用,把重复的类型注解定义成接口
+interface Girl {
+	name: string,
+	age: number,
+	bust: number
+}
+
+const screenResumeInterface = (girl: Girl): void => {
+	let defaultAge = 25;
+	let defaultBust = 90;
+	girl.age < 24 && girl.bust >= 90 && console.log(`${girl.name}进入面试`);
+  girl.age > 24 || (girl.bust < 90 && console.log(`${girl.name}被淘汰`));
+}
+
+const getResumeInterface = (girl: Girl): void => {
+	console.log(`${girl.name}的年龄是${girl.age},bust是${girl.bust}`)
+}
+
+const girl = {
+	name: '小花',
+	age: 23,
+	bust: 91
+}
+screenResumeInterface(girl)
+getResumeInterface(girl)
+
+```
+
+
+
+#### interface和type alias(别名)的区别
+
+```js
+//别名
+type Gilr1 = string //别名可以是字符串,数组,对象等
+//接口interface只接受对象形式
+interface Girl {
+    name: string,
+    age: number,
+    bust: number,
+    waistline?:number, //表示可选,非必写
+    [propname: string]: any //表示属性名称是字符串类型,属性值是任意类型
+}
+
+```
+

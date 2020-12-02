@@ -58,3 +58,50 @@ sayHello()
 function add({one, two}: {one: number, two: number}): number {
 	return one+two
 }
+//需求一: 筛选简历[age<25，bust>90]
+const screenResume = (name: string, age: number, bust: number): void => {
+	let defaultAge = 25;
+	let defaultBust = 90;
+	// if (age < defaultAge && bust >= defaultBust) {
+	// 	console.log(`${name}进入面试`);
+	// } else if (age > defaultAge || bust < defaultBust) {
+	// 	console.log(`${name}被淘汰`);
+	// }
+	age < defaultAge && bust >= defaultBust && console.log(`${name}进入面试`);
+	age > defaultAge || (bust < defaultBust && console.log(`${name}被淘汰`));
+}
+
+screenResume('小花', 23, 91)
+screenResume('小绿', 23, 89)
+
+//需求二: 在筛选完成的基础上,老大要看到简历
+const getResume = (name: string, age: number, bust: number): void => {
+	console.log(`${name}的年龄是${age},bust是${bust}`)
+}
+getResume('小花', 23, 91)
+
+//两个需求参数和类型注解都是一样的,需要代码复用,把重复的类型注解定义成接口
+interface Girl {
+	name: string,
+	age: number,
+	bust: number
+}
+
+const screenResumeInterface = (girl: Girl): void => {
+	let defaultAge = 25;
+	let defaultBust = 90;
+	girl.age < 24 && girl.bust >= 90 && console.log(`${girl.name}进入面试`);
+  girl.age > 24 || (girl.bust < 90 && console.log(`${girl.name}被淘汰`));
+}
+
+const getResumeInterface = (girl: Girl): void => {
+	console.log(`${girl.name}的年龄是${girl.age},bust是${girl.bust}`)
+}
+
+const girl = {
+	name: '小花',
+	age: 23,
+	bust: 91
+}
+screenResumeInterface(girl)
+getResumeInterface(girl)
