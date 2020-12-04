@@ -105,3 +105,92 @@ const girl = {
 }
 screenResumeInterface(girl)
 getResumeInterface(girl)
+
+/**
+ * sex?: string 表示可选字段
+ * [propname: string]: any 表示任意字符串字段名,值是任意类型
+ * say(): string 表示函数,返回值是string类型
+ */
+interface Boy {
+	name: string,
+	age: number,
+	height: number,
+	sex?: string,
+	[propname: string]: any,
+	say(): string
+}
+
+const jack: Boy = {
+	name: 'jack',
+	age: 18,
+	height: 180,
+	say() {
+		return 'hello mary!'
+	},
+	sex: 'male',
+	ttt: 123
+}
+console.log(jack)
+
+
+//类的getter,setter和static的使用
+//private最大的作用就是封装属性,然后通过getter和setter来进行修改
+//static作用,不实例化直接使用类中的方法
+class Girls {
+	constructor(private _age: number){}
+	
+	get age(){
+		return this._age
+	}
+
+	set age(age: number){
+		this._age = age
+	}
+
+	static say(): void {
+		console.log('酒干倘卖无')
+	}
+}
+const mary = new Girls(28)
+mary.age = 18 //set方法设置年龄
+console.log(mary.age) //get方法获取年龄
+
+Girls.say()
+
+//抽象类:关键词abstract,抽象方法的关键词也是abstract
+abstract class Girlss {
+	abstract skill()
+}
+
+class Waiter extends Girlss {
+	skill() {
+		console.log('喝水')
+	}
+}
+
+class baseTeacher extends Girlss {
+	skill() {
+		console.log('按摩')
+	}
+}
+
+class seniorTeacher extends Girlss {
+	skill() {
+		console.log('SPA')
+	}
+}
+
+//枚举的值是从0开始的类数组下标,如果不想从零开始
+// enum Status {
+//   MASSAGE,
+//   SPA,
+//   DABAOJIAN,
+// }
+//从1开始
+enum Status {
+  MASSAGE=1,
+  SPA,
+  DABAOJIAN,
+}
+
+console.log(Status.MASSAGE, Status.SPA, Status.DABAOJIAN, Status[1])

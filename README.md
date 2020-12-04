@@ -246,8 +246,150 @@ interface Girl {
     age: number,
     bust: number,
     waistline?:number, //表示可选,非必写
-    [propname: string]: any //表示属性名称是字符串类型,属性值是任意类型
+    [propname: string]: any, //表示属性名称是字符串类型,属性值是任意类型
+    say(): string, //方法say,返回值string
 }
 
+```
+
+#### 接口和类的约束
+
+````js
+//接口的继承使用extends
+//写法一
+interface Teacher extends Girl {}
+//写法二
+interface Teacher extends Girl {
+  teach(): string;
+}
+````
+
+### 类相关
+
+```js
+class Lady {
+  content = 'hi, 帅锅'
+  say(){
+      return this.content
+  }
+}
+//ts中类的继承也是使用extends
+class Mary extends Lady {
+  sayLove() {
+    return "I love you";
+  }
+}
+const mary = new Mary()
+mary.say()
+mary.sayLove()
+
+//类的重写,super关键字,代表父类中的方法
+class Mary extends Lady {
+  say() {
+    return super.say() + '..锅锅'
+  }
+}
+
+//类的访问类型: private, protected, public
+class Person {
+    name: string
+}
+const person = new Person()
+person.name='娃哈哈'
+console.log(person.name) //娃哈哈,不定义访问类型,默认public
+
+//public允许在类的内部和外部调用
+class Person {
+    public name: string
+}
+
+//private只允许在类的内部调用
+class Person{
+    private name: string,
+    say(): void{
+        console.log(this.name)
+    }
+}
+const person = new Person()
+person.name='金苹果'
+person.say() //不报错,内部调用
+console.log(person.name) //报错
+
+
+//protected允许在类内和继承的子类内使用
+class Person {
+	protected name: string,
+    say(){
+        console.log('你好'+this.name)
+    }
+}
+class Teacher extends Person {
+    public sayBye(){
+        this.name;
+    }
+}
+
+
+//类的构造函数,关键字: constructor
+//定义了一个name,在构造函数中进行赋值
+class Person{
+    constructor(public name: string){
+        
+    }
+}
+
+
+//类的getter,setter和static的使用
+//private最大的作用就是封装属性,然后通过getter和setter来进行修改
+class Girl {
+    constructor(private _age: number){}
+    
+    get age(){
+        return this._age
+    }
+    
+    set age(age: number){
+        this._age = age
+    }
+}
+const mary = new Girl(28)
+mary.age = 18 //set方法
+console.log(mary.age) //get方法,获取年龄,18
+
+
+//静态修饰符static,不用new构造函数,直接使用类的方法
+class Girl {
+	static say(){
+		return '酒干倘卖无'
+    }
+}
+正常: new Girl().say()
+static化: Girl.say()
+```
+
+
+
+### 联合类型和类型保护
+
+只有联合类型存在的情况下,才需要类型保护.
+
+所谓联合类型,可以认为是变量有一种或多种的类型
+
+```js
+//声明Waiter和Teacher接口,判断是谁的方法judgeWho, 里面传入任意值staff,staff可能是waiter,也可能是teacher,就需要使用联合类型,关键符号是竖线
+interface Waiter {
+  anjiao: boolean;
+  say: () => {};
+}
+
+interface Teacher {
+  anjiao: boolean;
+  skill: () => {};
+}
+
+function judgeWho(staff: Waiter | Teacher) {}
+
+//如果直接写judgeWho方法会报错,因为judgeWho不能判断联合类型的具体实例是什么
+function judgeWho(staff: Waiter | Teacher) {}
 ```
 
