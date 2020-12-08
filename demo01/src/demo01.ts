@@ -55,7 +55,7 @@ function sayHello(): void {
 sayHello()
 
 //函数参数类型为对象解构
-function add({one, two}: {one: number, two: number}): number {
+function add01({one, two}: {one: number, two: number}): number {
 	return one+two
 }
 //需求一: 筛选简历[age<25，bust>90]
@@ -158,27 +158,27 @@ console.log(mary.age) //get方法获取年龄
 Girls.say()
 
 //抽象类:关键词abstract,抽象方法的关键词也是abstract
-abstract class Girlss {
-	abstract skill()
-}
+// abstract class Girlss {
+// 	abstract skill()
+// }
 
-class Waiter extends Girlss {
-	skill() {
-		console.log('喝水')
-	}
-}
+// class Waiter extends Girlss {
+// 	skill() {
+// 		console.log('喝水')
+// 	}
+// }
 
-class baseTeacher extends Girlss {
-	skill() {
-		console.log('按摩')
-	}
-}
+// class baseTeacher extends Girlss {
+// 	skill() {
+// 		console.log('按摩')
+// 	}
+// }
 
-class seniorTeacher extends Girlss {
-	skill() {
-		console.log('SPA')
-	}
-}
+// class seniorTeacher extends Girlss {
+// 	skill() {
+// 		console.log('SPA')
+// 	}
+// }
 
 //枚举的值是从0开始的类数组下标,如果不想从零开始
 // enum Status {

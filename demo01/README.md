@@ -598,16 +598,6 @@ define(["require", "exports", "./components"], function (require, exports, compo
 
 ```
 
-###  parcel打包
-
-```js
-//修改package.json
-"test": "parcel ./src/index.html"
-
-//运行
-yarn test 或者npm run test
-```
-
 
 
 
