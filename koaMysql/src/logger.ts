@@ -5,6 +5,6 @@ export default function logger() {
     const start = Date.now()
     await next()
     const ms = Date.now() - start
-    console.log(`type:${ctx.method}-url:${ctx.url}-status:${ctx.status}-耗时:${ms}ms`)
+    console.log(`${ctx.method}  ${ctx.url}  ${ctx.status}  ${ms}ms`)
   }
 }
