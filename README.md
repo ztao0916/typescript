@@ -622,3 +622,150 @@ yarn test 或者npm run test
 
 
 
+### 实战:koa连接MySQL
+
+#### tsconfig配置(可做模板)
+
+```js
+{
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig.json to read more about this file */
+
+    /* Basic Options */
+    // "incremental": true,                   /* 是否启用增量编译 */
+    "target": "es5",                          /* 编译后的目标版本,这里是编译成es5文件 */
+    "module": "commonjs",                     /* 指定模块代码生成遵循的规范,常用:commonjs,amd */
+    // "lib": [],                             /* 编译时需要使用那些文件,比如要把es6编译成es5,就需要es6库文件 */
+    // "allowJs": true,                       /* 是否允许编译javascript文件,默认false */
+    // "checkJs": true,                       /* 是否检查和报告JS文件中的错误,默认false */
+    // "jsx": "preserve",                     /* 指定jsx代码用于的开发环境:preserve,react-native,react */
+    // "declaration": true,                   /* 编译时生成相应的'.d.ts'文件 */
+    // "declarationMap": true,                /* 编译时为每个相应的.d.ts文件生成一个源映射 */
+    // "sourceMap": true,                     /* 编译时生成相应的'.map'文件 */
+    // "outFile": "./",                       /* 编译时多个文件合并成一个文,只有当module:amd时才支持该配置 */
+    // "outDir": "./",                        /* 编译时指定输出文件夹. */
+    // "rootDir": "./",                       /* 指定输入文件根目录 */
+    // "composite": true,                     /* 启用项目编译 */
+    // "tsBuildInfoFile": "./",               /* 指定文件用来存储增量编译信息 */
+    // "removeComments": true,                /* 是否将编译后的文件注释删除,默认false,不删除 */
+    // "noEmit": true,                        /* 不生成编译文件 */
+    // "importHelpers": true,                 /* 是否引入tslib里的复制工具函数,默认为false */
+    // "downlevelIteration": true,            /* 当target=es5/es3,为for-of,spread和destructuring中的迭代器提供完全支持 */
+    // "isolatedModules": true,               /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */
+
+    /* Strict Type-Checking Options */
+    "strict": true,                           /* 是否启动所有类型检查 */
+    // "noImplicitAny": true,                 /* 默认false,如果没有设置类型,默认any,设为true,不设置类型报错 */
+    // "strictNullChecks": true,              /* strictNullChecks为true时，null和undefined值不能赋给非这两种类型的值 */
+    // "strictFunctionTypes": true,           /* 是否使用函数参数双向协变检查 */
+    // "strictBindCallApply": true,           /* 设为true后会对bind、call和apply绑定的方法的参数的检测是严格检测的 */
+    // "strictPropertyInitialization": true,  /* 非undefined属性是否已经在构造函数里初始化，如果要开启这项，需要同时开启strictNullChecks. */
+    // "noImplicitThis": true,                /* 当this表达式的值为any类型的时候，生成一个错误 */
+    // "alwaysStrict": true,                  /* 始终以严格模式检查每个模块，并且在编译之后的js文件中加入"use strict"字符串，用来告诉浏览器该js为严格模式 */
+
+    /* Additional Checks */
+    // "noUnusedLocals": true,                /* 检查是否有定义了但是没有使用的变量,默认false */
+    // "noUnusedParameters": true,            /* 检查是否有在函数体中没有使用的参数,默认false */
+    // "noImplicitReturns": true,             /* 用于检查函数是否有返回值,默认false.true会提示 */
+    // "noFallthroughCasesInSwitch": true,    /* 检查switch中是否有case没有使用break跳出switch,默认为false */
+    // "noUncheckedIndexedAccess": true,      /* Include 'undefined' in index signature results */
+
+    /* Module Resolution Options */
+    // "moduleResolution": "node",            /* 指定模块解析策略: node(Node.js),classic(TypeScript pre-1.6) */
+    // "baseUrl": "./",                       /* 解析非相对模块名称的基本目录,相对模块不会受baseUrl的影响 */
+    // "paths": {},                           /* 用于设置模块名称到基于baseUrl的路径映射 */
+    // "rootDirs": [],                        /* 指定一个路径列表,在构建时编译器会将这个路径中的内容都放到一个文件夹中 */
+    // "typeRoots": [],                       /* 用来指定声明文件或文件夹的路径列表 */
+    // "types": [],                           /* 用于指定需要包含的模块,只有在这里列出的模块的声明文件才会被加载 */
+    // "allowSyntheticDefaultImports": true,  /* 用来指定允许从没有默认导出的模块中默认导入 */
+    "esModuleInterop": true,                  /* 通过导入内容创建命名空间,实现CommonJS和ES模块之间的互操作性 */
+    // "preserveSymlinks": true,              /* 不把符号链接解析为其真实路径??? */
+    // "allowUmdGlobalAccess": true,          /* Allow accessing UMD globals from modules. */
+
+    /* Source Map Options */
+    // "sourceRoot": "",                      /* 用于指定调试器应该找到TypeScript文件而不是源文件的位置,写入.map文件 */
+    // "mapRoot": "",                         /* 用于指定map文件的根路径,指引调试器找到映射文件 */
+    // "inlineSourceMap": true,               /* 是否将map文件内容和js文件编译在一个同一个js文件中 */
+    // "inlineSources": true,                 /* 是否进一步将ts文件的内容也包含到输出文件中 */
+
+    /* Experimental Options */
+    // "experimentalDecorators": true,        /* 是否启用装饰器特性 */
+    // "emitDecoratorMetadata": true,         /* 是否为装饰器提供元数据支持 */
+
+    /* Advanced Options */
+    "skipLibCheck": true,                     /* 是否跳过声明文件的类型检查 */
+    "forceConsistentCasingInFileNames": true  /* 禁止对同一文件使用大小写不一致的引用 */
+  },
+  "include":["src/**/*"], //要编译的文件路径
+  "exclude":[], //要排除的文件
+  "references":[] //指定要引用的项目
+}
+
+```
+
+
+
+#### import {xxx}  和 import xxx区别
+
+加大括号是因为使用的是`export`导出,可以多个
+
+不加大括号是因为使用`export default`导出,唯一
+
+
+
+#### 打印请求日志中间件
+
+`await next()`让出执行权,等待下游中间件执行结束以后在运行
+
+```tsx
+//server.ts
+import Koa from 'koa'
+import cors from '@koa/cors'
+import bodyParser from 'koa-bodyparser'
+import logger from './logger'
+
+//初始化
+const PORT = 7000
+const app = new Koa()
+
+console.log(logger)
+
+//注册中间件
+app.use(logger())
+app.use(cors()) //跨域
+app.use(bodyParser()) //解析post请求参数
+
+//响应用户请求
+app.use(async ctx => {
+  ctx.body ='hello koa'
+})
+
+//运行服务器
+app.listen(PORT, (): void => {
+  console.log(`serve running at localhost:${PORT}`)
+})
+
+//logger.ts
+import { Context } from 'koa'
+
+export default function logger() {
+  return async (ctx: Context, next: () => Promise<void>) => {
+    const start = Date.now()
+    await next()
+    const ms = Date.now() - start
+    console.log(`type:${ctx.method}-url:${ctx.url}-status:${ctx.status}-耗时:${ms}ms`)
+  }
+}
+```
+
+#### 路由配置
+
+| 方法   | 路由            | 作用                |
+| ------ | --------------- | ------------------- |
+| GET    | /users          | 查询所有的用户      |
+| GET    | /users/:id      | 查询单个用户        |
+| PUT    | /users/:id      | 更新单个用户        |
+| DELETE | /users/:id      | 删除单个用户        |
+| POST   | /users/login    | 登录(获取JWT Token) |
+| POST   | /users/register | 注册                |
+
