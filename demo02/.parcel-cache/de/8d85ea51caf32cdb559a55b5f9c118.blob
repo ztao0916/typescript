@@ -1,2 +1,0 @@
-const teacher = "Mrs.wang";
-console.log(teacher);
