@@ -21,6 +21,233 @@ class Color{}
 // 属性装饰器的第三个参数为undefined
 ```
 
+#### 类装饰器
+
+```js
+const Controller1: ClassDecorator = (target: any) => {
+  target.isController = true
+  // target.hha = 'haha'
+  // target.key= '你好'
+  // console.log(target)
+  // console.log(target.prototype)
+}
+@Controller1
+class MyClass1{ }
+console.log(MyClass1.isController) //true
+// @Controller
+// class MyClass {
+//   public key: string
+//   constructor(key) {
+//     this.key = key
+//   }
+// }
+// const myClass = new MyClass('mary')
+// console.log(myClass.key)
+// console.log(myClass.__proto__.constructor)
+// console.log(MyClass.hha)
+
+//工厂方法: 要给装饰器传递参数使用
+function controller2(label: string): ClassDecorator {
+  return (target: any) => {
+    target.isController = true;
+    target.controllerLabel = label;
+  }
+}
+@controller2('my')
+class MyClass2 { }
+console.log(MyClass2.controllerLabel)
+
+//类装饰器的定义
+// type ClassDecorator = <TFunction extends Function>(target: TFunction) => TFunction | void;
+//接口
+interface Mixinable {
+  [funcName: string]: Function;
+}
+//装饰器[给构造器原型增加函数]
+function mixin(List: Mixinable[]): ClassDecorator {
+  return (target: any) => {
+    Object.assign(target.prototype, ...List);
+  }
+}
+const mixin1 = {
+  fun1 () {
+      return 'fun1'
+  }
+};
+const mixin2 = {
+  fun2 () {
+      return 'fun2'
+  }
+};
+@mixin([mixin1, mixin2])
+class MyClass3{ }
+
+// console.log(MyClass3.prototype == (new MyClass3()).__proto__)
+```
+
+
+
+#### 属性装饰器
+
+```js
+//属性装饰器, propertyKey：属性名,target：静态属性是类的构造函数，实例属性是类的原型对象
+//type PropertyDecorator = (target: Object, propertyKey: string | symbol) => void;
+interface CheckRule{
+  required: boolean;
+}
+interface MetaData {
+  [key: string]: CheckRule;
+}
+
+const Required: PropertyDecorator = (target: any, key: string |symbol) => {
+  //都是挂在构造函数的原型上的
+  target.__metadata = target.__metadata ? target.__metadata : {}
+  target.__metadata[key] = {required: true} // {name: {required: true}, type: {required: true}}
+}
+//直接定义name,type,表示在创建实例的时候,实例有这两个属性name和type
+class MyClass4 {
+  @Required
+  name: string;
+
+  @Required
+  type: string;
+}
+
+function validate(entity: MyClass4): boolean {
+  //@ts-ignore
+  const metadata: MetaData = entity.__metadata;
+  if (metadata) {
+    let i: number,
+      key: string,
+      rule: CheckRule;
+    const keys = Object.keys(metadata); //获取对象的键数组
+    for (i = 0; i < keys.length; i++){
+      key = keys[i];
+      rule = metadata[key];
+      if (rule.required && (entity[key] === undefined || entity[key] === null || entity[key] === '')) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+const entity = new MyClass4()
+entity.name = 'mary'
+entity.type = ''
+console.log(entity.__metadata)
+const result: boolean = validate(entity)
+console.log('校验结果', result)
+```
+
+
+
+#### 方法装饰器
+
+3个参数 `target` ,`propertyKey `和 `descriptor`
+
+`descriptor`:   属性描述符
+
+`propertyKey`:  属性名
+
+```js
+//使用时添加到方法声明前,用于自动输出方法的调用日志
+const log: MethodDecorator = (target: any, key: string | symbol, descriptor: PropertyDecorator) => {
+  const className = target.constructor.name; //类的名称
+  const oldValue = descriptor.value;
+  descriptor.value = function (...params) {
+    console.log(`调用${className}.${key}()方法`)
+    return oldValue.apply(this, params)
+  }
+}
+
+class MyClass {
+  private name: string;
+  constructor(name: string) {
+    this.name = name;
+  }
+  @log
+  getName(): string {
+    return 'Tom'
+  }
+}
+
+const entity = new MyClass('Tom')
+
+const name = entity.getName()
+// 输出: 调用MyClass.getName()方法
+```
+
+#### 参数装饰器
+
+3个参数 `target` ,`propertyKey `和 `parameterIndex`
+
+`parameterIndex`:   在方法参数列表中的索引值
+
+`propertyKey`:  属性名
+
+```js
+//type ParameterDecorator = (target: Object, propertyKey: string | symbol, parameterIndex: number) => void;
+//使用时添加到参数声明前,用于输出参数信息日志
+function logParam(paramName: string = ''): ParameterDecorator {
+  return (target: any, key: string | symbol, paramIndex: number) => {
+    if (!target.__metadata) {
+      target.__metadata = {};
+    }
+    if (!target.__metadata[key]) {
+      target.__metadata[key] = [];
+    }
+    target.__metadata[key].push({
+      paramName,
+      paramIndex
+    });
+  }
+}
+
+const Log: MethodDecorator = (target: any, key: string | symbol, descriptor: PropertyDecorator) => {
+  const className = target.constructor.name; //类名
+  const oldValue = descriptor.value;
+  descriptor.value = (...params) => {
+    let paramInfo = '';
+    if (target.__metadata && target.__metadata[key]) {
+      target.__metadata[key].forEach(item => {
+        paramInfo += `\n * 第${item.paramIndex}个参数${item.paramName}的值为: ${params[item.paramIndex]}`;
+      })
+    }
+    console.log(`调用${className}.${key}()方法` + paramInfo);
+    return oldValue.apply(this, params);
+  }
+}
+
+class MyClass {
+  private name: string;
+  constructor(name: string) {
+      this.name = name;
+  }
+  @Log
+  getName (): string {
+      return 'Tom';
+  }
+  @Log
+  setName(@logParam() name: string): void {
+      this.name = name;
+  }
+  @Log
+  setNames( @logParam('firstName') firstName: string, @logParam('lastName') lastName: string): void {
+      this.name = firstName + '' + lastName;
+  }
+}
+
+const entity = new MyClass('Tom');
+const name = entity.getName();
+// 输出：调用MyClass.getName()方法
+
+entity.setNames('Jone', 'Brown');
+/*调用MyClass.setNames()方法
+ * 第1个参数lastName的值为: Brown
+ * 第0个参数firstName的值为: Jone
+*/
+```
+
 
 
 ### `reflect-metadata`
@@ -144,15 +371,42 @@ Reflect.getMetadata('methodMetaData', new SomeClass(), 'someMethod'); // 'b'
 使用结构如下:
 
 ```js
-@Controller('/test')
-class SomeClass {
-  @Get('/a')
-  someGetMethod() {
-    return 'hello world';
-  }
-
-  @Post('/b')
-  somePostMethod() {}
+//controller.ts
+import 'reflect-metadata'
+export interface Route {
+  propertyKey: string,
+  method: string,
+  path: string
 }
+
+export function Controller(path: string = ''): ClassDecorator {
+  return (target: any) => {
+    Reflect.defineMetadata('basePath', path, target);
+  }
+}
+
+export type RouterDecoratorFactory = (path?: string) => MethodDecorator;
+
+export function createRouterDecorator(method: string): RouterDecoratorFactory {
+  return (path?: string) => {
+    (target: any, propertyKey: string, descriptor: PropertyDecorator) => {
+      const route: Route = {
+        propertyKey,
+        method,
+        path: path || ''
+      }
+      if (!Reflect.hasMetadata('routes', target)) {
+        Reflect.defineMetadata('routes', [], target);
+      }
+      const routes = Reflect.getMetadata('routes', target);
+      routes.push(route);
+    }
+  }
+}
+
+export const Get: RouterDecoratorFactory = createRouterDecorator('get');
+export const Post: RouterDecoratorFactory = createRouterDecorator('post');
+export const Put: RouterDecoratorFactory = createRouterDecorator('put');
+export const Delete: RouterDecoratorFactory = createRouterDecorator('delete');
 ```
 
