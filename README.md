@@ -364,7 +364,9 @@ Reflect.getMetadata('classMetaData', SomeClass); // 'a'
 Reflect.getMetadata('methodMetaData', new SomeClass(), 'someMethod'); // 'b'
 ```
 
-#### Controller 与 Get 的实现
+### 装饰器和`reflect-metadata`应用
+
+使用装饰器可以实现自动注册路由,通过给`Controller`层的类和方法添加装饰器来定义路由信息,当创建路由时,扫描指定目录下的所有`Controller`,获取装饰器定义的路由信息,从而实现自动添加路由
 
 依赖注入是将一个对象所依赖的其他对象直接提供给这个对象，而不是在当前对象中直接构建这些依赖的对象,[nestjs](https://docs.nestjs.com/) 是基于依赖注入的 nodejs web 框架
 
