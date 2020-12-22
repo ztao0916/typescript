@@ -14,14 +14,42 @@ export default class UserController {
   }
 
   public static async showUserDetail(ctx: Context) {
-    ctx.body="单个用户详情控制器"
+    const userRepository = getManager().getRepository(User);
+    const user = await userRepository.findOne(+ctx.params.id);
+    if (user) {
+      ctx.body = resHandle({
+        data: user
+      })
+    } else {
+      ctx.body = resHandle({
+        code: 404,
+        errMsg: '查询的数据不存在'
+      })
+    }
   }
 
   public static async updateUser(ctx: Context) {
-    ctx.body="更新单个用户"
+    const userRepository = getManager().getRepository(User);
+    await userRepository.update(+ctx.params.id, ctx.request.body);
+    const updatedUser = await userRepository.findOne(+ctx.params.id);
+    if (updatedUser) {
+      ctx.body = resHandle({
+        data: updatedUser
+      })
+    } else {
+      ctx.body = resHandle({
+        code: 404,
+        errMsg: '需要更新的数据不存在'
+      })
+    }
   }
 
   public static async deleteUser(ctx: Context) {
-    ctx.body="删除单个用户"
+    // ctx.body="删除单个用户"
+    const userRepository = getManager().getRepository(User);
+    await userRepository.delete(+ctx.params.id);
+    ctx.body = resHandle({
+      data: '删除数据成功'
+    })
   }
 }
