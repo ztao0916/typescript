@@ -1,12 +1,16 @@
 import { Context } from 'koa'
 import { getManager } from 'typeorm'
-import {User} from '../entity/user'
+import { User } from '../entity/user'
+import {resHandle} from '../util/util'
 
 export default class UserController {
   public static async listUsers(ctx: Context) {
     // ctx.body="获取所有用户控制器"
     const userRepository = getManager().getRepository(User);
     const users = await userRepository.find();
+    ctx.body = resHandle({
+      data: users
+    })
   }
 
   public static async showUserDetail(ctx: Context) {
