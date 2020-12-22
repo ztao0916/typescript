@@ -1,43 +1,34 @@
 {
   "compilerOptions": {
-    // "incremental": true,                   /* 是否启用增量编译 */
-    "target": "es5",                          /* 编译后的目标版本,这里是编译成es5文件 */
-    "module": "commonjs",                     /* 指定模块代码生成遵循的规范 */
-    "lib": ["es6"],                           /* 编译时需要使用那些文件,比如要把es6编译成es5,就需要es6库文件 */
-    "sourceMap": true,                        /* 编译时生成相应的'.map'文件 */
-    "outDir": "./dist",                        /* 编译时指定输出文件夹 */
-    "rootDir": "./src",                       /* 指定输入文件的根目录 */
-    /* Strict Type-Checking Options */
-    "strict": true,                           /* 是否启动所有类型检查,默认false */
-    "noImplicitAny": true,                 /* 默认false,如果没有设置类型,默认any,设为true,不设置类型报错 */
-    "strictNullChecks": true,              /* strictNullChecks为true时，null和undefined值不能赋给非这两种类型的值 */
-    "alwaysStrict": true,                  /* 始终以严格模式检查每个模块,编译后的js加use strict,告诉浏览器该js为严格模式. */
-
-    /* Additional Checks */
-    // "noUnusedLocals": true,                /* 检查是否有定义了但是没有使用的变量,默认false */
-    // "noUnusedParameters": true,            /* 检查是否有在函数体中没有使用的参数,默认false */
-    // "noImplicitReturns": true,             /* 用于检查函数是否有返回值,默认false.true会提示 */
-    // "noFallthroughCasesInSwitch": true,    /* 检查switch中是否有case没有使用break跳出switch,默认为false */
-    // "noUncheckedIndexedAccess": true,      /* Include 'undefined' in index signature results */
-
-    /* 选择模块解析策略 */
-    "moduleResolution": "node",            /* 指定模块解析策略: node(Node.js),classic(TypeScript pre-1.6) */
-    "baseUrl": "./",                       /* 解析非相对模块名称的基本目录,相对模块不会受baseUrl的影响 */
-    "paths": {
-      "*":["node_modules/*"]
-    },                           /* 用于设置模块名称到基于baseUrl的路径映射 */
-    "allowSyntheticDefaultImports": true,  /* 用来指定允许从没有默认导出的模块中默认导入 */
-    "esModuleInterop": true,                  /* 通过导入内容创建命名空间,实现CommonJS和ES模块之间的互操作性 */
-    /* Source Map Options */
-    "mapRoot": "./map",                         /* 用于指定map文件的根路径,指引调试器找到映射文件 */
-
-    /* Experimental Options */
-    "experimentalDecorators": true,        /* 是否启用装饰器特性 */
-    "emitDecoratorMetadata": true,         /* 是否为装饰器提供元数据支持 */
-
-    /* Advanced Options */
-    "skipLibCheck": true,                     /* 是否跳过声明文件的类型检查 */
-    "forceConsistentCasingInFileNames": true /* 禁止对同一文件使用大小写不一致的引用. */
+    // 指定编译为ECMAScript的哪个版本,默认为ES5
+    "target": "es5",
+    // 编译为哪种模块系统,如果target为ES5，默认为CommonJS
+    "module": "commonjs",
+    // 编译过程中需要引入的库,target为ES5,默引入[DOM,ES5,ScriptHost];target为ES6,默认[DOM,ES6,DOM.Iterable,ScriptHost]
+    "lib": ["es6"],
+    // 编译时生成相应的map文件
+    "sourceMap": true,
+    // 编译时指定输出文件夹,默认输出到ts文件所在的目录
+    "outDir": "./build",
+    // 指定输入文件根目录
+    "rootDir": "./src",
+    // 是否将编译后的文件注释删除
+    "removeComments": true,
+    // 模块解析策略,classic或者node,默认node
+    "moduleResolution": "node",
+    // 是否支持使用import cjs from 'cjs'的方式引入commonjs包
+    "esModuleInterop": true,
+    // 是否启用实验性的ES装饰器
+    "experimentalDecorators": true,
+    // 是否自动设置design类型元数据,有design:type,design:paramtypes,design:returntype
+    "emitDecoratorMetadata": true,
+    // 是否跳过声明文件的类型检查
+    "skipLibCheck": true,
+    // 禁止对同一文件使用大小写不一致的引用
+    "forceConsistentCasingInFileNames": true
   },
-  "include":["src/**/*"] //要编译的文件路径
+  //要编译的文件路径
+  "include": ["src/**/*"],
+  //要排除的文件路径
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }

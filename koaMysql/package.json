@@ -1,11 +1,12 @@
 {
-  "name": "koaMysql",
+  "name": "koa-mysql",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon -w src -e ts,tsx --exec ts-node src/server.ts"
+    "dev": "nodemon --watch src -e ts,tsx --exec ts-node src/server.ts",
+    "build": "tsc",
+    "start": "tsc && nodemon build/server.js"
   },
   "keywords": [],
   "author": "ztt",
