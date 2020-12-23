@@ -8,6 +8,7 @@ export class User {
   @Column()
   name: string;
 
+  //select: false表示查询的时候不展示该字段
   @Column({ select: false })
   password: string;
 

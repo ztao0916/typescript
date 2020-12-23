@@ -5,10 +5,11 @@ import { createConnection } from 'typeorm'
 import 'reflect-metadata'
 import logger from './logger'
 import router from './router'
-import {errorHandle} from './util/util'
+import { errorHandle } from './util/util'
+import {User} from './entity/user'
 
 createConnection()
-.then(() => {
+.then(async (connection) => {
   //初始化
   const PORT = 7000
   const app = new Koa()
