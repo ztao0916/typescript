@@ -2,11 +2,12 @@ import Router from '@koa/router'
 import AuthController from './controllers/authController'
 import UserController from './controllers/userController'
 
-const router = new Router()
+const router = new Router();
 
 //登录,注册
-router.post('/auth/login', AuthController.login)
-router.post('/auth/register', AuthController.register)
+router.post('/auth/login', AuthController.login);
+router.post('/auth/register', AuthController.register);
+
 
 //用户相关
 router.get('/users', UserController.listUsers)

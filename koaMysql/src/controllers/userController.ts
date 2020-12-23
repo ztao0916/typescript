@@ -14,8 +14,10 @@ export default class UserController {
   }
 
   public static async showUserDetail(ctx: Context) {
+    const userId = +ctx.params.id;
+    console.log(ctx.state.user);
     const userRepository = getManager().getRepository(User);
-    const user = await userRepository.findOne(+ctx.params.id);
+    const user = await userRepository.findOne(userId);
     if (user) {
       ctx.body = resHandle({
         data: user

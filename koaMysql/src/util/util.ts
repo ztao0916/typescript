@@ -49,7 +49,7 @@ export const errorHandle = (): Koa.Middleware => {
       }
     } catch (err) {
       ctx.body = resHandle({
-        errMsg: '系统异常',
+        errMsg: err.message || '系统异常',
         code: 500
       });
     }
