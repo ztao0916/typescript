@@ -50,7 +50,7 @@ export const errorHandle = (): Koa.Middleware => {
     } catch (err) {
       ctx.body = resHandle({
         errMsg: err.message || '系统异常',
-        code: 500
+        code: err.status || 500
       });
     }
   }
